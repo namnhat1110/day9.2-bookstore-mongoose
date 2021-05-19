@@ -1,10 +1,27 @@
-import React from "react";
-import { Navbar, Nav } from "react-bootstrap";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
 import logo from "../images/logo.svg";
-import githubIco from "../images/github_icon.png";
+// import githubIco from "../images/github_icon.png";
 import { NavLink } from "react-router-dom";
 
+
+
+
+
 const PublicNavbar = () => {
+  const authState = useSelector((state) => state.auth);
+  const [email, setEmail] = useState("");
+  const dispatch = useDispatch();
+  const onSignIn = (e) => {
+    e.preventDefault();
+    dispatch({ type: "AUTH.SIGN_IN", payload: { email } });
+  };
+
+  const onSignOut = (e) => {
+    e.preventDefault();
+    dispatch({ type: "AUTH.SIGN_OUT" });
+  };
   return (
     <Navbar bg="light" expand="lg">
       <Navbar.Brand>
@@ -18,11 +35,35 @@ const PublicNavbar = () => {
           Reading List
         </Nav.Link>
       </Nav>
-      <Nav>
-        <a href="#your_github_repo_link" target="_blank">
-          <img src={githubIco} alt="Github" width="32px" />
-        </a>
-      </Nav>
+      {authState.email ? (
+        <Form inline onSubmit={onSignOut}>
+          {authState.email}
+          < Button
+            variant="outline-danger"
+            onClick={onSignOut}
+          >
+            Sign Out
+                            </Button>
+        </Form>
+      ) : (
+        <Form inline onSubmit={onSignIn}>
+          <FormControl
+            type="text"
+            placeholder="Email"
+            className="mr-sm-2"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+          />
+          <Button
+            type="submit"
+            variant="outline-success"
+            onClick={onSignIn}
+          >
+            Sign In
+                            </Button>
+
+        </Form>
+      )}
     </Navbar>
   );
 };
