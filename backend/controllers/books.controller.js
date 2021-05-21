@@ -14,6 +14,8 @@ const createBook = async (req, res) => {
             data: book,
 
             message: `Book ${book.title} created!`,
+
+
         });
     } catch (err) {
         res.status(400).json({
@@ -27,7 +29,9 @@ const createBook = async (req, res) => {
 
 const getBooks = async (req, res) => {
     try {
-        const books = await Book.find({}).populate("author");
+        const books = await Book.find({})
+            .populate("author")
+            .populate("genres", "-_id -__v")
 
         res.status(200).json({
             success: true,
